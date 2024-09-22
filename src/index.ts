@@ -44,6 +44,16 @@ async function fetchBlogArticles() {
       query: GET_BLOG_ARTICLES
     })
 
+    if (!data || !data.articles || !data.articles.edges) {
+      console.error("Unexpected data structure received:", data)
+      return
+    }
+
+    console.log(`Total articles received: ${data.articles.edges.length}`)
+
+    const blogTitles = new Set(data.articles.edges.map((edge: any) => edge.node.blog.title))
+    console.log("Blog titles found:", Array.from(blogTitles))
+
     const santosCatolicosArticles = data.articles.edges.filter((edge: any) => 
       edge.node.blog.title === 'Santos Católicos'
     )
