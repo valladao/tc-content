@@ -21,7 +21,7 @@ const client = new ApolloClient({
 
 const GET_BLOG_ARTICLES = gql`
   query GetBlogArticles {
-    articles(first: 250) {
+    articles(first: 1000) {
       edges {
         node {
           id
@@ -51,15 +51,19 @@ async function fetchBlogArticles() {
 
     console.log(`Total articles received: ${data.articles.edges.length}`)
 
-    const blogTitles = new Set(data.articles.edges.map((edge: any) => edge.node.blog.title))
+    const blogTitles = new Set(
+      data.articles.edges.map((edge: any) => edge.node.blog.title)
+    )
     console.log("Blog titles found:", Array.from(blogTitles))
 
-    const santosCatolicosArticles = data.articles.edges.filter((edge: any) => 
-      edge.node.blog.title === 'Santos Católicos'
+    const santosCatolicosArticles = data.articles.edges.filter(
+      (edge: any) => edge.node.blog.title === "Santos Católicos"
     )
 
     if (santosCatolicosArticles.length > 0) {
-      console.log(`Found ${santosCatolicosArticles.length} articles from Santos Católicos blog`)
+      console.log(
+        `Found ${santosCatolicosArticles.length} articles from Santos Católicos blog`
+      )
       santosCatolicosArticles.forEach((edge: any) => {
         const article = edge.node
         saveHtmlContent(article)
@@ -74,7 +78,7 @@ async function fetchBlogArticles() {
 }
 
 function saveHtmlContent(article: any) {
-  const publishedDir = path.join(__dirname, '..', 'published')
+  const publishedDir = path.join(__dirname, "..", "published")
   if (!fs.existsSync(publishedDir)) {
     fs.mkdirSync(publishedDir, { recursive: true })
   }
@@ -85,7 +89,7 @@ function saveHtmlContent(article: any) {
 }
 
 function saveJsonMetadata(article: any) {
-  const publishedPostsDir = path.join(__dirname, '..', 'published-posts')
+  const publishedPostsDir = path.join(__dirname, "..", "published-posts")
   if (!fs.existsSync(publishedPostsDir)) {
     fs.mkdirSync(publishedPostsDir, { recursive: true })
   }
