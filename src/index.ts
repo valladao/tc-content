@@ -21,15 +21,18 @@ const client = new ApolloClient({
 
 const GET_BLOG_ARTICLES = gql`
   query GetBlogArticles {
-    articles(first: 250, query: "blog_title:'Santos Católicos'") {
+    articles(first: 250) {
       edges {
         node {
           id
           handle
           title
-          contentHtml
+          content
           tags
-          onlineStoreUrl
+          url
+          blog {
+            title
+          }
         }
       }
     }
@@ -42,15 +45,19 @@ async function fetchBlogArticles() {
       query: GET_BLOG_ARTICLES
     })
 
-    if (data.articles.edges.length > 0) {
-      console.log(`Found ${data.articles.edges.length} articles`)
-      data.articles.edges.forEach((edge: any) => {
+    const santosCatolicosArticles = data.articles.edges.filter((edge: any) => 
+      edge.node.blog.title === 'Santos Católicos'
+    )
+
+    if (santosCatolicosArticles.length > 0) {
+      console.log(`Found ${santosCatolicosArticles.length} articles from Santos Católicos blog`)
+      santosCatolicosArticles.forEach((edge: any) => {
         const article = edge.node
         saveHtmlContent(article)
         saveJsonMetadata(article)
       })
     } else {
-      console.log("No articles found")
+      console.log("No articles found in Santos Católicos blog")
     }
   } catch (error) {
     console.error("Error fetching blog articles:", error)
@@ -64,7 +71,7 @@ function saveHtmlContent(article: any) {
   }
 
   const filePath = path.join(publishedDir, `${article.handle}.html`)
-  fs.writeFileSync(filePath, article.contentHtml)
+  fs.writeFileSync(filePath, article.content)
   console.log(`Saved HTML content for "${article.title}" to ${filePath}`)
 }
 
@@ -79,7 +86,8 @@ function saveJsonMetadata(article: any) {
     handle: article.handle,
     title: article.title,
     tags: article.tags,
-    onlineStoreUrl: article.onlineStoreUrl
+    url: article.url,
+    blogTitle: article.blog.title
   }
 
   const filePath = path.join(publishedPostsDir, `${article.handle}.json`)
