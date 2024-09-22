@@ -99,7 +99,7 @@ async function fetchBlogArticles() {
 }
 
 function saveHtmlContent(article: any) {
-  const publishedDir = path.join(__dirname, "..", "published")
+  const publishedDir = path.join(process.env.HOME || process.env.USERPROFILE || '', 'Documents', 'tc-content', 'published')
   if (!fs.existsSync(publishedDir)) {
     fs.mkdirSync(publishedDir, { recursive: true })
   }
@@ -110,7 +110,7 @@ function saveHtmlContent(article: any) {
 }
 
 function saveJsonMetadata(article: any) {
-  const publishedPostsDir = path.join(__dirname, "..", "published-posts")
+  const publishedPostsDir = path.join(process.env.HOME || process.env.USERPROFILE || '', 'Documents', 'tc-content', 'published-posts')
   if (!fs.existsSync(publishedPostsDir)) {
     fs.mkdirSync(publishedPostsDir, { recursive: true })
   }
