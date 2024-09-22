@@ -13,18 +13,18 @@ const client = new ApolloClient({
   fetch: fetch as any,
 });
 
-const GET_PRODUCTS = gql`
-  query GetProducts {
-    products(first: 10) {
+const GET_BLOG_POSTS = gql`
+  query GetBlogPosts {
+    blogs(first: 1) {
       edges {
         node {
-          id
-          title
-          description
-          images(first: 1) {
+          articles(first: 10) {
             edges {
               node {
-                src
+                id
+                title
+                content
+                publishedAt
               }
             }
           }
@@ -34,16 +34,16 @@ const GET_PRODUCTS = gql`
   }
 `;
 
-async function fetchProducts() {
+async function fetchBlogPosts() {
   try {
     const { data } = await client.query({
-      query: GET_PRODUCTS,
+      query: GET_BLOG_POSTS,
     });
 
-    console.log(JSON.stringify(data.products.edges, null, 2));
+    console.log(JSON.stringify(data.blogs.edges[0].node.articles.edges, null, 2));
   } catch (error) {
-    console.error('Error fetching products:', error);
+    console.error('Error fetching blog posts:', error);
   }
 }
 
-fetchProducts();
+fetchBlogPosts();
