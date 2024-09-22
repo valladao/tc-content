@@ -1,0 +1,25 @@
+{
+  "name": "shopify-graphql-project",
+  "version": "1.0.0",
+  "description": "A Node.js/TypeScript project with Shopify GraphQL client",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "node dist/index.js",
+    "build": "tsc",
+    "dev": "ts-node src/index.ts"
+  },
+  "keywords": ["shopify", "graphql", "typescript"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@shopify/shopify-api": "^7.0.0",
+    "dotenv": "^16.0.3",
+    "node-fetch": "^3.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.11",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.4"
+  },
+  "type": "module"
+}
