@@ -19,10 +19,18 @@ const client = new ApolloClient({
 
 const GET_BLOG_POSTS = gql`
   query GetBlogPosts {
-    blogs(first: 250) {
+    blogs(first: 1) {
       edges {
         node {
           title
+          articles(first: 10) {
+            edges {
+              node {
+                title
+                content
+              }
+            }
+          }
         }
       }
     }
