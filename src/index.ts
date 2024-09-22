@@ -29,7 +29,6 @@ const GET_BLOG_ARTICLES = gql`
           title
           body
           tags
-          onlineStoreUrl
           blog {
             title
           }
@@ -86,7 +85,6 @@ function saveJsonMetadata(article: any) {
     handle: article.handle,
     title: article.title,
     tags: article.tags,
-    url: article.onlineStoreUrl,
     blogTitle: article.blog.title
   }
 
