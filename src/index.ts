@@ -49,11 +49,11 @@ const GET_BLOG_ARTICLES = gql`
 async function fetchBlogArticles() {
   try {
     let hasNextPage = true;
-    let cursor = null;
+    let cursor: string | null = null;
     let allArticles: any[] = [];
 
     while (hasNextPage) {
-      const { data } = await client.query({
+      const { data }: { data: { articles: { pageInfo: { hasNextPage: boolean, endCursor: string }, edges: any[] } } } = await client.query({
         query: GET_BLOG_ARTICLES,
         variables: { cursor }
       });
