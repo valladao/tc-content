@@ -19,10 +19,21 @@ const client = new ApolloClient({
 
 const GET_BLOG_POSTS = gql`
   query GetBlogPosts {
-    blogs(first: 250) {
+    blogs(first: 1) {
       edges {
         node {
+          id
           title
+          articles(first: 10) {
+            edges {
+              node {
+                id
+                title
+                content
+                publishedAt
+              }
+            }
+          }
         }
       }
     }
@@ -36,8 +47,9 @@ async function fetchBlogPosts() {
     })
 
     if (data.blogs.edges.length > 0) {
-      const articles = data.blogs.edges[0].node.articles.edges
-      console.log(JSON.stringify(articles, null, 2))
+      const blog = data.blogs.edges[0].node
+      console.log("Blog Title:", blog.title)
+      console.log("Articles:", JSON.stringify(blog.articles.edges, null, 2))
     } else {
       console.log("No blogs found")
     }
