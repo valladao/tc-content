@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
+import { ApolloClient, InMemoryCache, gql } from '@apollo/client/core';
 import fetch from 'node-fetch';
 
 dotenv.config();
