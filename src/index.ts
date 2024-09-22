@@ -27,9 +27,9 @@ const GET_BLOG_ARTICLES = gql`
           id
           handle
           title
-          content
+          body
           tags
-          url
+          onlineStoreUrl
           blog {
             title
           }
@@ -71,7 +71,7 @@ function saveHtmlContent(article: any) {
   }
 
   const filePath = path.join(publishedDir, `${article.handle}.html`)
-  fs.writeFileSync(filePath, article.content)
+  fs.writeFileSync(filePath, article.body)
   console.log(`Saved HTML content for "${article.title}" to ${filePath}`)
 }
 
@@ -86,7 +86,7 @@ function saveJsonMetadata(article: any) {
     handle: article.handle,
     title: article.title,
     tags: article.tags,
-    url: article.url,
+    url: article.onlineStoreUrl,
     blogTitle: article.blog.title
   }
 
