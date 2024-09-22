@@ -17,42 +17,35 @@ const client = new ApolloClient({
   cache: new InMemoryCache()
 })
 
-const GET_BLOG_POSTS = gql`
-  query GetBlogPosts {
-    blogs(first: 1) {
+const GET_BLOG_TITLES = gql`
+  query GetBlogTitles {
+    blogs(first: 10) {
       edges {
         node {
           title
-          articles(first: 10) {
-            edges {
-              node {
-                title
-                content
-              }
-            }
-          }
         }
       }
     }
   }
 `
 
-async function fetchBlogPosts() {
+async function fetchBlogTitles() {
   try {
     const { data } = await client.query({
-      query: GET_BLOG_POSTS
+      query: GET_BLOG_TITLES
     })
 
     if (data.blogs.edges.length > 0) {
-      const blog = data.blogs.edges[0].node
-      console.log("Blog Title:", blog.title)
-      console.log("Articles:", JSON.stringify(blog.articles.edges, null, 2))
+      console.log("Blog Titles:")
+      data.blogs.edges.forEach((edge: any) => {
+        console.log(edge.node.title)
+      })
     } else {
       console.log("No blogs found")
     }
   } catch (error) {
-    console.error("Error fetching blog posts:", error)
+    console.error("Error fetching blog titles:", error)
   }
 }
 
-fetchBlogPosts()
+fetchBlogTitles()
