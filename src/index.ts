@@ -20,8 +20,12 @@ const client = new ApolloClient({
 })
 
 const GET_BLOG_ARTICLES = gql`
-  query GetBlogArticles {
-    articles(first: 1000) {
+  query GetBlogArticles($cursor: String) {
+    articles(first: 250, after: $cursor) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
       edges {
         node {
           id
@@ -40,40 +44,53 @@ const GET_BLOG_ARTICLES = gql`
 
 async function fetchBlogArticles() {
   try {
-    const { data } = await client.query({
-      query: GET_BLOG_ARTICLES
-    })
+    let hasNextPage = true;
+    let cursor = null;
+    let allArticles: any[] = [];
 
-    if (!data || !data.articles || !data.articles.edges) {
-      console.error("Unexpected data structure received:", data)
-      return
+    while (hasNextPage) {
+      const { data } = await client.query({
+        query: GET_BLOG_ARTICLES,
+        variables: { cursor }
+      });
+
+      if (!data || !data.articles || !data.articles.edges) {
+        console.error("Unexpected data structure received:", data);
+        return;
+      }
+
+      allArticles = allArticles.concat(data.articles.edges);
+      hasNextPage = data.articles.pageInfo.hasNextPage;
+      cursor = data.articles.pageInfo.endCursor;
+
+      console.log(`Fetched ${data.articles.edges.length} articles. Total: ${allArticles.length}`);
     }
 
-    console.log(`Total articles received: ${data.articles.edges.length}`)
+    console.log(`Total articles received: ${allArticles.length}`);
 
     const blogTitles = new Set(
-      data.articles.edges.map((edge: any) => edge.node.blog.title)
-    )
-    console.log("Blog titles found:", Array.from(blogTitles))
+      allArticles.map((edge: any) => edge.node.blog.title)
+    );
+    console.log("Blog titles found:", Array.from(blogTitles));
 
-    const santosCatolicosArticles = data.articles.edges.filter(
+    const santosCatolicosArticles = allArticles.filter(
       (edge: any) => edge.node.blog.title === "Santos Católicos"
-    )
+    );
 
     if (santosCatolicosArticles.length > 0) {
       console.log(
         `Found ${santosCatolicosArticles.length} articles from Santos Católicos blog`
-      )
+      );
       santosCatolicosArticles.forEach((edge: any) => {
-        const article = edge.node
-        saveHtmlContent(article)
-        saveJsonMetadata(article)
-      })
+        const article = edge.node;
+        saveHtmlContent(article);
+        saveJsonMetadata(article);
+      });
     } else {
-      console.log("No articles found in Santos Católicos blog")
+      console.log("No articles found in Santos Católicos blog");
     }
   } catch (error) {
-    console.error("Error fetching blog articles:", error)
+    console.error("Error fetching blog articles:", error);
   }
 }
 
