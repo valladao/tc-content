@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A Node.js/TypeScript project with Shopify GraphQL client",
   "main": "dist/index.js",
+  "type": "module",
   "scripts": {
     "start": "node dist/index.js",
     "build": "tsc",
@@ -26,6 +27,5 @@
     "@types/node": "^18.15.11",
     "ts-node": "^10.9.2",
     "typescript": "^5.0.4"
-  },
-  "type": "module"
+  }
 }
