@@ -1,24 +1,49 @@
 import dotenv from 'dotenv';
-import { shopifyApi, LATEST_API_VERSION } from '@shopify/shopify-api';
+import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
+import fetch from 'node-fetch';
 
 dotenv.config();
 
-const shopify = shopifyApi({
-  apiKey: process.env.SHOPIFY_API_KEY || '',
-  apiSecretKey: process.env.SHOPIFY_API_SECRET_KEY || '',
-  scopes: ['read_products'],
-  hostName: process.env.SHOPIFY_SHOP_NAME || '',
-  apiVersion: LATEST_API_VERSION,
-  isEmbeddedApp: false,
+const client = new ApolloClient({
+  uri: `https://${process.env.SHOPIFY_SHOP_NAME}/admin/api/2023-04/graphql.json`,
+  cache: new InMemoryCache(),
+  headers: {
+    'X-Shopify-Access-Token': process.env.SHOPIFY_ACCESS_TOKEN || '',
+  },
+  fetch: fetch as any,
 });
 
-async function main() {
+const GET_PRODUCTS = gql`
+  query GetProducts {
+    products(first: 10) {
+      edges {
+        node {
+          id
+          title
+          description
+          images(first: 1) {
+            edges {
+              node {
+                src
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+async function fetchProducts() {
   try {
-    // Your Shopify GraphQL queries and mutations will go here
-    console.log('Shopify GraphQL client is set up!');
+    const { data } = await client.query({
+      query: GET_PRODUCTS,
+    });
+
+    console.log(JSON.stringify(data.products.edges, null, 2));
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error fetching products:', error);
   }
 }
 
-main();
+fetchProducts();

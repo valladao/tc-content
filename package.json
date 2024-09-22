@@ -8,12 +8,18 @@
     "build": "tsc",
     "dev": "ts-node --esm src/index.ts"
   },
-  "keywords": ["shopify", "graphql", "typescript"],
+  "keywords": [
+    "shopify",
+    "graphql",
+    "typescript"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@apollo/client": "^3.11.8",
     "@shopify/shopify-api": "^7.0.0",
     "dotenv": "^16.0.3",
+    "graphql": "^16.9.0",
     "node-fetch": "^3.3.1"
   },
   "devDependencies": {
