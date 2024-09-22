@@ -1,16 +1,20 @@
 import dotenv from 'dotenv';
-import { ApolloClient, InMemoryCache, gql } from '@apollo/client/core';
+import { ApolloClient, InMemoryCache, gql, HttpLink } from '@apollo/client/core';
 import fetch from 'node-fetch';
 
 dotenv.config();
 
-const client = new ApolloClient({
+const httpLink = new HttpLink({
   uri: `https://${process.env.SHOPIFY_SHOP_NAME}/admin/api/2023-04/graphql.json`,
-  cache: new InMemoryCache(),
+  fetch: fetch as any,
   headers: {
     'X-Shopify-Access-Token': process.env.SHOPIFY_ACCESS_TOKEN || '',
   },
-  fetch: fetch as any,
+});
+
+const client = new ApolloClient({
+  link: httpLink,
+  cache: new InMemoryCache(),
 });
 
 const GET_BLOG_POSTS = gql`
@@ -18,6 +22,8 @@ const GET_BLOG_POSTS = gql`
     blogs(first: 1) {
       edges {
         node {
+          id
+          title
           articles(first: 10) {
             edges {
               node {
